@@ -1,0 +1,18 @@
+services:
+  java-app-user:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: java-app-user-container
+    ports:
+      - "${JAVA_APP_USER_PORT}:${JAVA_APP_USER_PORT}"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-container:${MYSQL_PORT}/${MYSQL_DATABASE} # Nombre del contenedor de MySQL en el Microservicio 1
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_ROOT_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    networks:
+      - backend
+
+networks:
+  backend:
+    external: true # Define que está usando una red existente
