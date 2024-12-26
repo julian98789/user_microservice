@@ -2,6 +2,7 @@ package com.user_microservice.user.domain.util;
 
 public class Util {
     public static final String NAME_NOT_BLANK = "El nombre no puede estar vacio";
+    public static final String NAME_ROLE_NOT_BLANK = "El nombre del rol no puede estar vacio";
     public static final String LAST_NAME_NOT_BLANK = "El apellido no puede estar vacio";
     public static final String IDENTIFICATION_NOT_BLANK = "El documento de identidad no puede estar vacio";
     public static final String IDENTIFICATION_PATTERN = "El documento de identidad debe ser numerico";

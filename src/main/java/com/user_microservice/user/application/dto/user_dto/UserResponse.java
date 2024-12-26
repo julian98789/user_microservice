@@ -1,6 +1,6 @@
-package com.user_microservice.user.application.user_dto;
+package com.user_microservice.user.application.dto.user_dto;
 
-import com.user_microservice.user.application.role_dto.RoleResponse;
+import com.user_microservice.user.application.dto.role_dto.role_dto.RoleResponse;
 
 import java.time.LocalDate;
 

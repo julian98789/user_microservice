@@ -1,4 +1,4 @@
-package com.user_microservice.user.application.user_dto;
+package com.user_microservice.user.application.dto.user_dto;
 
 import com.user_microservice.user.domain.util.Util;
 import jakarta.validation.constraints.Email;
@@ -30,5 +30,8 @@ public class UserRequest {
 
     @NotBlank(message = Util.PASSWORD_NOT_BLANK)
     private String password;
+
+    @NotBlank(message = Util.NAME_ROLE_NOT_BLANK)
+    private String role;
 
 }

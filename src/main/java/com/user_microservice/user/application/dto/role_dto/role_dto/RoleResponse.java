@@ -1,4 +1,4 @@
-package com.user_microservice.user.application.role_dto;
+package com.user_microservice.user.application.dto.role_dto.role_dto;
 
 import jakarta.validation.constraints.Size;
 
