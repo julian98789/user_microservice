@@ -22,7 +22,6 @@ public class UserHandler implements IUserHandler{
      private final IUserResponseMapper userResponseMapper;
      private final IRoleModelPersistencePort roleModelPersistencePort;
 
-
     @Override
     public UserResponse registerUser(UserRequest userRequest) {
 

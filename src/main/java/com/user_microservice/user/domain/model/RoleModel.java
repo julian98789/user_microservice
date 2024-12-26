@@ -5,11 +5,6 @@ public class RoleModel {
     private RoleName name;
     private String description;
 
-    public enum RoleName {
-        ADMIN,
-        AUX_BODEGA,
-        CLIENT
-    }
 
     public RoleModel(Long id, RoleName name, String description) {
         this.id = id;
