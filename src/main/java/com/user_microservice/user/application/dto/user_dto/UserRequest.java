@@ -29,7 +29,7 @@ public class UserRequest {
 
     @NotBlank(message = Util.PHONE_NOT_BLANK)
     @Pattern(regexp = "^\\+?\\d{1,13}$", message = Util.PHONE_PATTERN)
-    private String phone;
+    private String phoneNumber;
 
     @NotBlank(message = Util.EMAIL_NOT_BLANK)
     @Email(message = Util.EMAIL_PATTERN)
@@ -38,7 +38,6 @@ public class UserRequest {
     @NotBlank(message = Util.PASSWORD_NOT_BLANK)
     private String password;
 
-    @NotBlank(message = Util.NAME_ROLE_NOT_BLANK)
-    private RoleName role;
+    private String role;
 
 }
