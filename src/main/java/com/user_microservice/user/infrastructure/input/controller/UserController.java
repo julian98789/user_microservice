@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final IUserHandler userHandler;
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Operation(
             summary = "Registrar un nuevo usuario",
@@ -40,7 +43,10 @@ public class UserController {
     })
     @PostMapping("/crear")
     public ResponseEntity<UserResponse> resgisterUser(@Valid @RequestBody UserRequest userRequest){
+        logger.info("[Infraestructura] Recibiendo solicitud para crear usuario ");
         UserResponse registerUser = userHandler.registerUser(userRequest);
+
+        logger.info("[Infraestructura] Usuario creado exitosamente ");
         return ResponseEntity.status(HttpStatus.CREATED).body(registerUser);
     }
 

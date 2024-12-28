@@ -3,19 +3,20 @@ package com.user_microservice.user.domain.usecase;
 import com.user_microservice.user.domain.api.IUserModelServicePort;
 import com.user_microservice.user.domain.exception.EmailAlreadyExistsException;
 import com.user_microservice.user.domain.exception.IdentificationAlreadyExistsException;
-import com.user_microservice.user.domain.exception.RoleNameNotFoundException;
 import com.user_microservice.user.domain.exception.UserNotOfLegalAge;
-import com.user_microservice.user.domain.model.RoleName;
 import com.user_microservice.user.domain.model.UserModel;
 import com.user_microservice.user.domain.spi.IUserModelPersistencePort;
 import com.user_microservice.user.domain.util.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
-import java.util.Arrays;
+
 
 public class UserModelUseCase implements IUserModelServicePort {
 
     private final IUserModelPersistencePort userModelPersistencePort;
+    private static final Logger logger = LoggerFactory.getLogger(UserModelUseCase.class);
 
     public UserModelUseCase(IUserModelPersistencePort userModelPersistencePort) {
         this.userModelPersistencePort = userModelPersistencePort;
@@ -23,9 +24,12 @@ public class UserModelUseCase implements IUserModelServicePort {
 
     @Override
     public UserModel registerUser(UserModel userModel) {
+        logger.info("[Dominio] Iniciando registro de usuario en el sistema");
 
+        logger.info("[Dominio] Validando datos del usuario");
         validateUser(userModel);
 
+        logger.info("[Dominio] Registro de usuario completado exitosamente");
         return userModelPersistencePort.registerUser(userModel);
     }
 
@@ -41,15 +45,6 @@ public class UserModelUseCase implements IUserModelServicePort {
             throw new EmailAlreadyExistsException(Util.USER_EMAIL_ALREADY_EXISTS);
         }
 
-        // Validar que el rol existe en el enum RoleName
-        boolean isRoleValid = Arrays.stream(RoleName.values())
-                .anyMatch(role -> role.equals(user.getRole().getName()));
-        if (!isRoleValid) {
-            throw new RoleNameNotFoundException("El rol '" + user.getRole().getName() + "' no existe.");
-        }
-
     }
-
-
 
 }

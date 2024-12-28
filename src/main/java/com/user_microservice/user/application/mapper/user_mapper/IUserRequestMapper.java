@@ -11,7 +11,7 @@ import org.mapstruct.ReportingPolicy;
         unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface IUserRequestMapper {
 
-    @Mapping(target = "role.name", source = "role")  // Mapear el String 'role' a RoleName
+    @Mapping(target = "role.name", source = "role")
     UserModel userRequestToUserModel(UserRequest userRequest);
 
 }

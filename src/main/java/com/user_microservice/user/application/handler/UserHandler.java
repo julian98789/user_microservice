@@ -12,6 +12,8 @@ import com.user_microservice.user.domain.model.UserModel;
 import com.user_microservice.user.domain.spi.IRoleModelPersistencePort;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,27 +26,25 @@ public class UserHandler implements IUserHandler{
      private final IUserRequestMapper userRequestMapper;
      private final IUserResponseMapper userResponseMapper;
      private final IRoleModelPersistencePort roleModelPersistencePort;
+    private static final Logger logger = LoggerFactory.getLogger(UserHandler.class);
+
 
     @Override
     public UserResponse registerUser(UserRequest userRequest) {
-
+        logger.info("[Aplicación] Iniciando registro de usuario en el sistema");
         roleModelServicePort.existsRoleByName(userRequest.getRole());
 
-        // Convertir el String role a RoleName
         String roleNameString = userRequest.getRole().toUpperCase();
         RoleName roleName = RoleName.valueOf(roleNameString);
 
-        // Obtener el RoleModel basado en RoleName
         RoleModel roleModel = roleModelPersistencePort.getRoleByName(roleName);
 
-        // Convertir el UserRequest a UserModel y asignar el RoleModel
         UserModel userModel = userRequestMapper.userRequestToUserModel(userRequest);
         userModel.setRole(roleModel);
 
-        // Registrar el usuario
         UserModel registeredUser = userModelServicePort.registerUser(userModel);
 
-        // Retornar la respuesta
+        logger.info("[Aplicación] mapping de modelo a respuesta completado");
         return userResponseMapper.userModelToUserResponse(registeredUser);
     }
 
