@@ -1,8 +1,10 @@
 package com.user_microservice.user.infrastructure.configuration;
 
+import com.user_microservice.user.domain.api.IRoleModelServicePort;
 import com.user_microservice.user.domain.api.IUserModelServicePort;
 import com.user_microservice.user.domain.spi.IRoleModelPersistencePort;
 import com.user_microservice.user.domain.spi.IUserModelPersistencePort;
+import com.user_microservice.user.domain.usecase.RoleModelUseCase;
 import com.user_microservice.user.domain.usecase.UserModelUseCase;
 import com.user_microservice.user.infrastructure.output.jpa.adapter.RoleJpaAdapter;
 import com.user_microservice.user.infrastructure.output.jpa.adapter.UserJpaAdapter;
@@ -38,6 +40,11 @@ public class BeanConfiguration {
     @Bean
     public IUserModelServicePort userModelServicePort(IUserModelPersistencePort userModelPersistencePort) {
         return new UserModelUseCase(userModelPersistencePort);
+    }
+
+    @Bean
+    public IRoleModelServicePort roleModelServicePort(IRoleModelPersistencePort roleModelPersistencePort) {
+        return new RoleModelUseCase(roleModelPersistencePort);
     }
 
 

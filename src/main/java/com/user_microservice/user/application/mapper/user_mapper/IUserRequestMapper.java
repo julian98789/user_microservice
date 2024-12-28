@@ -12,6 +12,6 @@ import org.mapstruct.ReportingPolicy;
 public interface IUserRequestMapper {
 
     @Mapping(target = "role.name", source = "role")  // Mapear el String 'role' a RoleName
-    UserModel UserRequestToUserModel(UserRequest userRequest);
+    UserModel userRequestToUserModel(UserRequest userRequest);
 
 }

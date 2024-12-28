@@ -14,5 +14,5 @@ import org.mapstruct.ReportingPolicy;
 public interface IUserResponseMapper {
 
     @Mapping(target = "role", source = "role")
-    UserResponse UserModelToUserResponse (UserModel userModel);
+    UserResponse userModelToUserResponse(UserModel userModel);
 }

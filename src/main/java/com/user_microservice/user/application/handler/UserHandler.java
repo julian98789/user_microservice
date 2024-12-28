@@ -4,6 +4,7 @@ import com.user_microservice.user.application.dto.user_dto.UserRequest;
 import com.user_microservice.user.application.dto.user_dto.UserResponse;
 import com.user_microservice.user.application.mapper.user_mapper.IUserRequestMapper;
 import com.user_microservice.user.application.mapper.user_mapper.IUserResponseMapper;
+import com.user_microservice.user.domain.api.IRoleModelServicePort;
 import com.user_microservice.user.domain.api.IUserModelServicePort;
 import com.user_microservice.user.domain.model.RoleModel;
 import com.user_microservice.user.domain.model.RoleName;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 @Transactional
 public class UserHandler implements IUserHandler{
 
+    private final IRoleModelServicePort roleModelServicePort;
      private final IUserModelServicePort userModelServicePort;
      private final IUserRequestMapper userRequestMapper;
      private final IUserResponseMapper userResponseMapper;
@@ -25,6 +27,8 @@ public class UserHandler implements IUserHandler{
 
     @Override
     public UserResponse registerUser(UserRequest userRequest) {
+
+        roleModelServicePort.existsRoleByName(userRequest.getRole());
 
         // Convertir el String role a RoleName
         String roleNameString = userRequest.getRole().toUpperCase();
@@ -34,14 +38,14 @@ public class UserHandler implements IUserHandler{
         RoleModel roleModel = roleModelPersistencePort.getRoleByName(roleName);
 
         // Convertir el UserRequest a UserModel y asignar el RoleModel
-        UserModel userModel = userRequestMapper.UserRequestToUserModel(userRequest);
+        UserModel userModel = userRequestMapper.userRequestToUserModel(userRequest);
         userModel.setRole(roleModel);
 
         // Registrar el usuario
         UserModel registeredUser = userModelServicePort.registerUser(userModel);
 
         // Retornar la respuesta
-        return userResponseMapper.UserModelToUserResponse(registeredUser);
+        return userResponseMapper.userModelToUserResponse(registeredUser);
     }
 
 }

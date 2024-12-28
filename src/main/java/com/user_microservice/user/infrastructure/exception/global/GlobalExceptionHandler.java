@@ -2,6 +2,7 @@ package com.user_microservice.user.infrastructure.exception.global;
 
 import com.user_microservice.user.domain.exception.EmailAlreadyExistsException;
 import com.user_microservice.user.domain.exception.IdentificationAlreadyExistsException;
+import com.user_microservice.user.domain.exception.RoleNameNotFoundException;
 import com.user_microservice.user.domain.exception.UserNotOfLegalAge;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,6 +18,11 @@ import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(RoleNameNotFoundException.class)
+    public ResponseEntity<String> roleNotFound(RoleNameNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 
     @ExceptionHandler(AccountLockedException.class)
     public ResponseEntity<String> accountLockedException(AccountLockedException ex) {
@@ -37,6 +43,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> identificationAlreadyExistsException(IdentificationAlreadyExistsException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
+
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
