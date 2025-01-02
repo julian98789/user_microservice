@@ -2,7 +2,7 @@ package com.user_microservice.user.domain.usecase;
 
 import com.user_microservice.user.domain.exception.EmailAlreadyExistsException;
 import com.user_microservice.user.domain.exception.IdentificationAlreadyExistsException;
-import com.user_microservice.user.domain.exception.UserNotOfLegalAge;
+import com.user_microservice.user.domain.exception.UserNotOfLegalAgeException;
 import com.user_microservice.user.domain.model.RoleModel;
 import com.user_microservice.user.domain.model.RoleName;
 import com.user_microservice.user.domain.model.UserModel;
@@ -55,7 +55,7 @@ class UserModelUseCaseTest {
                 "password", "test@example.com", LocalDate.of(2020, 1, 1),
                 "123456789", "ID123", "Doe", "John");
 
-        UserNotOfLegalAge exception = assertThrows(UserNotOfLegalAge.class, () -> userModelUseCase.registerUser(userModel));
+        UserNotOfLegalAgeException exception = assertThrows(UserNotOfLegalAgeException.class, () -> userModelUseCase.registerUser(userModel));
         assertEquals(Util.USER_NOT_OF_LEGAL_EGE, exception.getMessage());
         verify(userModelPersistencePort, never()).registerUser(any());
     }
