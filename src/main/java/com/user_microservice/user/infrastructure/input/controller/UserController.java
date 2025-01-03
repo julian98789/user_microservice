@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,28 +28,18 @@ public class UserController {
     private final IUserHandler userHandler;
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-    @Operation(
-            summary = "Registrar un nuevo usuario",
-            description = "Este endpoint permite registrar un nuevo usuario en el sistema enviando los datos necesarios en el cuerpo de la solicitud.",
-            tags = {"User"}
-    )
+    @PostMapping("/create")
+    @Operation(summary = "Crear nuevo usuario")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Usuario registrado exitosamente",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = UserResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Solicitud inválida. Error en la validación de datos.",
-                    content = @Content(mediaType = "application/json")),
-            @ApiResponse(responseCode = "500", description = "Error interno del servidor.",
-                    content = @Content(mediaType = "application/json"))
+            @ApiResponse(responseCode = "201", description = "Usuario creado exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Solicitud incorrecta", content = @Content(mediaType = "application/json"))
     })
-    @PostMapping("/crear")
-    public ResponseEntity<UserResponse> resgisterUser(@Valid @RequestBody UserRequest userRequest){
-        logger.info("[Infraestructura] Recibiendo solicitud para crear usuario ");
-        UserResponse registerUser = userHandler.registerUser(userRequest);
 
-        logger.info("[Infraestructura] Usuario creado exitosamente ");
-        return ResponseEntity.status(HttpStatus.CREATED).body(registerUser);
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest userRequest) {
+        logger.info("[UserController] Creando nuevo usuario.");
+        UserResponse userResponse = userHandler.registerUser(userRequest);
+        logger.info("[UserController] Usuario creado exitosamente.");
+        return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
     }
-
-
 }

@@ -1,5 +1,6 @@
 package com.user_microservice.user.infrastructure.output.jpa.entity;
 
+import com.user_microservice.user.domain.util.Util;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -53,7 +54,7 @@ public class UserEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.getName().name()));
+        return List.of(new SimpleGrantedAuthority(Util.ROLE_PREFIX + role.getName().name()));
     }
 
     @Override
