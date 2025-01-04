@@ -1,4 +1,5 @@
 package com.user_microservice.user.infrastructure.input.controller;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.user_microservice.user.application.dto.user_dto.UserRequest;
@@ -12,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -45,6 +47,7 @@ class UserControllerTest {
 
     @Test
     @DisplayName("Registrar usuario con datos válidos debe devolver el usuario registrado")
+    @WithMockUser(roles = "ADMIN")
     void registerUser() throws Exception {
         UserRequest userRequest = new UserRequest();
         userRequest.setName("Juana");
@@ -67,7 +70,7 @@ class UserControllerTest {
 
         when(userHandler.registerUser(any(UserRequest.class))).thenReturn(userResponse);
 
-        mockMvc.perform(post("/api/user/crear")
+        mockMvc.perform(post("/api/user/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequest)))
                 .andExpect(status().isCreated())

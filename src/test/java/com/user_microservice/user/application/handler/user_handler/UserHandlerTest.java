@@ -1,8 +1,7 @@
-package com.user_microservice.user.application.handler;
+package com.user_microservice.user.application.handler.user_handler;
 
 import com.user_microservice.user.application.dto.user_dto.UserRequest;
 import com.user_microservice.user.application.dto.user_dto.UserResponse;
-import com.user_microservice.user.application.handler.user_handler.UserHandler;
 import com.user_microservice.user.application.mapper.user_mapper.IUserRequestMapper;
 import com.user_microservice.user.application.mapper.user_mapper.IUserResponseMapper;
 import com.user_microservice.user.domain.api.IRoleModelServicePort;
