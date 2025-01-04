@@ -1,4 +1,4 @@
-package com.user_microservice.user.domain.model;
+package com.user_microservice.user.domain.util;
 
 public enum RoleName {
     ADMIN,

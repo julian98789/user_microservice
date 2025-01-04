@@ -2,7 +2,7 @@ package com.user_microservice.user.infrastructure.input.controller;
 
 import com.user_microservice.user.application.dto.user_dto.UserRequest;
 import com.user_microservice.user.application.dto.user_dto.UserResponse;
-import com.user_microservice.user.application.handler.IUserHandler;
+import com.user_microservice.user.application.handler.user_handler.IUserHandler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

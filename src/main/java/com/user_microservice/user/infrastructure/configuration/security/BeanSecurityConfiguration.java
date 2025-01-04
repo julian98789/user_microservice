@@ -1,4 +1,4 @@
-package com.user_microservice.user.infrastructure.configuration;
+package com.user_microservice.user.infrastructure.configuration.security;
 
 import com.user_microservice.user.domain.util.Util;
 import com.user_microservice.user.infrastructure.output.jpa.repository.IUserRepository;
@@ -10,6 +10,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -30,7 +31,7 @@ public class BeanSecurityConfiguration {
     }
     @Bean
     public UserDetailsService userDetailsService() {
-        return userEmail -> userRepository.findByEmail(userEmail).orElseThrow(()-> new RuntimeException(Util.USER_NOT_FOUND));
+        return userEmail -> userRepository.findByEmail(userEmail).orElseThrow(()-> new UsernameNotFoundException(Util.USER_NOT_FOUND));
     }
 
 

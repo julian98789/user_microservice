@@ -1,5 +1,6 @@
 package com.user_microservice.user.infrastructure.security.adapter;
 
+import com.user_microservice.user.domain.exception.InvalidCredentialsException;
 import com.user_microservice.user.domain.model.RoleModel;
 import com.user_microservice.user.domain.model.UserModel;
 import com.user_microservice.user.domain.security.IAuthenticationSecurityPort;
@@ -61,7 +62,7 @@ public class AuthenticationSecurityAdapter implements IAuthenticationSecurityPor
             return isAuthenticated;
         } catch (Exception e) {
             logger.warn("[Infraestructura] [AuthenticationSecurityAdapter] Credenciales inválidas.");
-            return false;
+            throw new InvalidCredentialsException("Credenciales proporcionadas no validas.");
         }
     }
 

@@ -2,6 +2,7 @@ package com.user_microservice.user.infrastructure.input.controller;
 
 import com.user_microservice.user.application.dto.authentication_dto.AuthenticationRequest;
 import com.user_microservice.user.application.dto.authentication_dto.AuthenticationResponse;
+import com.user_microservice.user.application.handler.jwt_handler.IJwtHandler;
 import com.user_microservice.user.domain.api.IAuthenticationServicePort;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,14 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
-    private final IAuthenticationServicePort authenticationServicePort;
+    private final IJwtHandler jwtHandler;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> authenticate(@Valid @RequestBody AuthenticationRequest request) {
-        logger.info("[Infraestructura] [AuthController] Iniciando proceso de autenticación.");
-        String token = authenticationServicePort.login(request.getEmail(), request.getPassword());
-        logger.info("[Infraestructura] [AuthController] Usuario autenticado correctamente.");
-        AuthenticationResponse response = new AuthenticationResponse(token);
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest request) {
+        AuthenticationResponse response = jwtHandler.login(request);
         return ResponseEntity.ok(response);
     }
 }

@@ -1,6 +1,6 @@
 package com.user_microservice.user.infrastructure.output.jpa.entity;
 
-import com.user_microservice.user.domain.model.RoleName;
+import com.user_microservice.user.domain.util.RoleName;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

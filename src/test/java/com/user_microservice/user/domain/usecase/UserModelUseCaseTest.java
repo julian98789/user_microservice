@@ -4,7 +4,7 @@ import com.user_microservice.user.domain.exception.EmailAlreadyExistsException;
 import com.user_microservice.user.domain.exception.IdentificationAlreadyExistsException;
 import com.user_microservice.user.domain.exception.UserNotOfLegalAgeException;
 import com.user_microservice.user.domain.model.RoleModel;
-import com.user_microservice.user.domain.model.RoleName;
+import com.user_microservice.user.domain.util.RoleName;
 import com.user_microservice.user.domain.model.UserModel;
 import com.user_microservice.user.domain.spi.IUserModelPersistencePort;
 import com.user_microservice.user.domain.util.Util;
