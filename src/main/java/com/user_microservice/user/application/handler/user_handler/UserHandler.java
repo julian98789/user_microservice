@@ -1,4 +1,4 @@
-package com.user_microservice.user.application.handler;
+package com.user_microservice.user.application.handler.user_handler;
 
 import com.user_microservice.user.application.dto.user_dto.UserRequest;
 import com.user_microservice.user.application.dto.user_dto.UserResponse;
@@ -7,7 +7,7 @@ import com.user_microservice.user.application.mapper.user_mapper.IUserResponseMa
 import com.user_microservice.user.domain.api.IRoleModelServicePort;
 import com.user_microservice.user.domain.api.IUserModelServicePort;
 import com.user_microservice.user.domain.model.RoleModel;
-import com.user_microservice.user.domain.model.RoleName;
+import com.user_microservice.user.domain.util.RoleName;
 import com.user_microservice.user.domain.model.UserModel;
 import com.user_microservice.user.domain.spi.IRoleModelPersistencePort;
 import jakarta.transaction.Transactional;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class UserHandler implements IUserHandler{
+public class UserHandler implements IUserHandler {
 
     private final IRoleModelServicePort roleModelServicePort;
      private final IUserModelServicePort userModelServicePort;

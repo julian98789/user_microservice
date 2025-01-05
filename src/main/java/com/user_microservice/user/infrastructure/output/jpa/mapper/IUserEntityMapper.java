@@ -1,6 +1,5 @@
 package com.user_microservice.user.infrastructure.output.jpa.mapper;
 
-
 import com.user_microservice.user.domain.model.UserModel;
 import com.user_microservice.user.infrastructure.output.jpa.entity.UserEntity;
 import org.mapstruct.Mapper;

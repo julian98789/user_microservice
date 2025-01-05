@@ -1,9 +1,6 @@
 package com.user_microservice.user.infrastructure.exception.global;
 
-import com.user_microservice.user.domain.exception.EmailAlreadyExistsException;
-import com.user_microservice.user.domain.exception.IdentificationAlreadyExistsException;
-import com.user_microservice.user.domain.exception.RoleNameNotFoundException;
-import com.user_microservice.user.domain.exception.UserNotOfLegalAge;
+import com.user_microservice.user.domain.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +16,11 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<String> invalidCredentials(InvalidCredentialsException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
     @ExceptionHandler(RoleNameNotFoundException.class)
     public ResponseEntity<String> roleNotFound(RoleNameNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
@@ -29,8 +31,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
-    @ExceptionHandler(UserNotOfLegalAge.class)
-    public ResponseEntity<String> userNotOfLegalAge(UserNotOfLegalAge ex) {
+    @ExceptionHandler(UserNotOfLegalAgeException.class)
+    public ResponseEntity<String> userNotOfLegalAge(UserNotOfLegalAgeException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
