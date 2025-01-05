@@ -10,6 +10,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql-container:${MYSQL_PORT}/${MYSQL_DATABASE} # Nombre del contenedor de MySQL en el Microservicio 1
       SPRING_DATASOURCE_USERNAME: ${MYSQL_ROOT_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
     networks:
       - backend
 

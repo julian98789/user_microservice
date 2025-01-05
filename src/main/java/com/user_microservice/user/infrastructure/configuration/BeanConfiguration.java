@@ -1,9 +1,12 @@
 package com.user_microservice.user.infrastructure.configuration;
 
+import com.user_microservice.user.domain.api.IAuthenticationServicePort;
 import com.user_microservice.user.domain.api.IRoleModelServicePort;
 import com.user_microservice.user.domain.api.IUserModelServicePort;
+import com.user_microservice.user.domain.security.IAuthenticationSecurityPort;
 import com.user_microservice.user.domain.spi.IRoleModelPersistencePort;
 import com.user_microservice.user.domain.spi.IUserModelPersistencePort;
+import com.user_microservice.user.domain.usecase.AuthenticationUseCase;
 import com.user_microservice.user.domain.usecase.RoleModelUseCase;
 import com.user_microservice.user.domain.usecase.UserModelUseCase;
 import com.user_microservice.user.infrastructure.output.jpa.adapter.RoleJpaAdapter;
@@ -12,9 +15,12 @@ import com.user_microservice.user.infrastructure.output.jpa.mapper.IRoleEntityMa
 import com.user_microservice.user.infrastructure.output.jpa.mapper.IUserEntityMapper;
 import com.user_microservice.user.infrastructure.output.jpa.repository.IRoleRepository;
 import com.user_microservice.user.infrastructure.output.jpa.repository.IUserRepository;
+import com.user_microservice.user.infrastructure.security.adapter.AuthenticationSecurityAdapter;
+import com.user_microservice.user.infrastructure.security.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
@@ -26,6 +32,8 @@ public class BeanConfiguration {
     private final IRoleRepository roleRepository;
     private final IRoleEntityMapper roleEntityMapper;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
     @Bean
     public IRoleModelPersistencePort roleModelPersistencePort() {
@@ -45,6 +53,16 @@ public class BeanConfiguration {
     @Bean
     public IRoleModelServicePort roleModelServicePort(IRoleModelPersistencePort roleModelPersistencePort) {
         return new RoleModelUseCase(roleModelPersistencePort);
+    }
+
+    @Bean
+    public IAuthenticationSecurityPort authenticationSecurityPort (IRoleModelPersistencePort roleModelPersistencePort){
+        return new AuthenticationSecurityAdapter( authenticationManager, jwtService, roleModelPersistencePort, userEntityMapper);
+    }
+
+    @Bean
+    public IAuthenticationServicePort authenticationServicePort(IAuthenticationSecurityPort authenticationSecurityPort){
+       return new AuthenticationUseCase(authenticationSecurityPort);
     }
 
 

@@ -1,5 +1,7 @@
 package com.user_microservice.user.domain.model;
 
+import com.user_microservice.user.domain.util.RoleName;
+
 public class RoleModel {
     private Long id;
     private RoleName name;
