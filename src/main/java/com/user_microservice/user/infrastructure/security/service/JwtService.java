@@ -62,13 +62,13 @@ public class JwtService {
             logger.info("[Infraestructura] [JwtService] Token JWT validado exitosamente.");
             return isValid;
         } catch (JwtException | IllegalArgumentException e) {
-            logger.warn("[Infraestructura] [JwtService] Token JWT inválido.", e);
+            logger.warn("[Infraestructura] [JwtService] Token JWT invalido.", e);
             return false;
         }
     }
 
     private Boolean isTokenExpired(Claims claims) {
-        logger.info("[Infraestructura] [JwtService] Verificando si el token JWT está expirado.");
+        logger.info("[Infraestructura] [JwtService] Verificando si el token JWT esta expirado.");
         return claims.getExpiration().before(new Date());
     }
 }

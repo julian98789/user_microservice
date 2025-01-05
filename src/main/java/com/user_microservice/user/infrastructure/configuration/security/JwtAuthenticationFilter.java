@@ -34,45 +34,74 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader(Util.AUTH_HEADER);
 
-        if (authHeader == null || !authHeader.startsWith(Util.TOKEN_PREFIX)) {
-            jwtAuthenticationLogger.warn("[Infraestructura] [JwtAuthenticationFilter] Encabezado de autorización no encontrado o inválido.");
+        if (isInvalidAuthHeader(authHeader)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String jwt = authHeader.substring(Util.TOKEN_PREFIX_LENGTH);
-        try {
-            jwtAuthenticationLogger.info("[Infraestructura] [JwtAuthenticationFilter] Validando token JWT.");
-            if (!jwtService.isTokenValid(jwt)) {
-                jwtAuthenticationLogger.warn("[Infraestructura] [JwtAuthenticationFilter] Token JWT inválido.");
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, Util.INVALID_TOKEN);
-                return;
-            }
-
-            String userName = jwtService.extractUsername(jwt);
-            jwtAuthenticationLogger.info("[Infraestructura] [JwtAuthenticationFilter] Token JWT válido. Extrayendo usuario con ID: {}.", userName);
-
-            UserEntity user = userRepository.findById(Long.parseLong(userName))
-                    .orElseThrow(() -> new RuntimeException(Util.USER_NOT_FOUND));
-
-
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                    userName, null, user.getAuthorities()
-            );
-            SecurityContextHolder.getContext().setAuthentication(authToken);
-            jwtAuthenticationLogger.info("[Infraestructura] [JwtAuthenticationFilter] Usuario autenticado exitosamente.");
-
-        } catch (ExpiredJwtException e) {
-            jwtAuthenticationLogger.error("[Infraestructura] [JwtAuthenticationFilter] Token JWT expirado.", e);
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, Util.TOKEN_EXPIRED);
-            return;
-        } catch (Exception e) {
-            jwtAuthenticationLogger.error("[Infraestructura] [JwtAuthenticationFilter] Error durante la validación del token JWT.", e);
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, Util.INVALID_TOKEN);
+        String jwt = extractJwtFromHeader(authHeader);
+        if (!processJwtAuthentication(jwt, response)) {
             return;
         }
 
-        jwtAuthenticationLogger.info("[Infraestructura] [JwtAuthenticationFilter] Filtro JWT completado exitosamente.");
         filterChain.doFilter(request, response);
+    }
+
+    private boolean isInvalidAuthHeader(String authHeader) {
+        if (authHeader == null || !authHeader.startsWith(Util.TOKEN_PREFIX)) {
+            jwtAuthenticationLogger.warn("[Infraestructura] [JwtAuthenticationFilter] Encabezado de autorizacion no encontrado o invalido.");
+            return true;
+        }
+        return false;
+    }
+
+    private String extractJwtFromHeader(String authHeader) {
+        jwtAuthenticationLogger.info("[Infraestructura] [JwtAuthenticationFilter] Extrayendo JWT del encabezado.");
+        return authHeader.substring(Util.TOKEN_PREFIX_LENGTH);
+    }
+
+    private boolean processJwtAuthentication(String jwt, HttpServletResponse response) throws IOException {
+        try {
+            jwtAuthenticationLogger.info("[Infraestructura] [JwtAuthenticationFilter] Validando token JWT.");
+            if (!jwtService.isTokenValid(jwt)) {
+                jwtAuthenticationLogger.warn("[Infraestructura] [JwtAuthenticationFilter] Token JWT invalido.");
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, Util.INVALID_TOKEN);
+                return false;
+            }
+
+            String userName = jwtService.extractUsername(jwt);
+            jwtAuthenticationLogger.info("[Infraestructura] [JwtAuthenticationFilter] Token JWT valido. Extrayendo usuario con ID: {}.", userName);
+
+            authenticateUser(userName);
+            jwtAuthenticationLogger.info("[Infraestructura] [JwtAuthenticationFilter] Usuario autenticado exitosamente.");
+        } catch (ExpiredJwtException e) {
+            handleExpiredToken(response, e);
+            return false;
+        } catch (Exception e) {
+            handleInvalidToken(response, e);
+            return false;
+        }
+
+        return true;
+    }
+
+    private void authenticateUser(String userName) {
+        UserEntity user = userRepository.findById(Long.parseLong(userName))
+                .orElseThrow(() -> new RuntimeException(Util.USER_NOT_FOUND));
+
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                userName, null, user.getAuthorities()
+        );
+        SecurityContextHolder.getContext().setAuthentication(authToken);
+    }
+
+    private void handleExpiredToken(HttpServletResponse response, ExpiredJwtException e) throws IOException {
+        jwtAuthenticationLogger.error("[Infraestructura] [JwtAuthenticationFilter] Token JWT expirado.", e);
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, Util.TOKEN_EXPIRED);
+    }
+
+    private void handleInvalidToken(HttpServletResponse response, Exception e) throws IOException {
+        jwtAuthenticationLogger.error("[Infraestructura] [JwtAuthenticationFilter] Error durante la validación del token JWT.", e);
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, Util.INVALID_TOKEN);
     }
 }

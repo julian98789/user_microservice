@@ -16,7 +16,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
-public class ConfiguratioFilter {
+public class ConfigurationFilter {
 
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthenticationFilter jwtAuthFilter;

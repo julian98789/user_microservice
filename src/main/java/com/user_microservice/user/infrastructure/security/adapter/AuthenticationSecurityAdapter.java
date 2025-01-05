@@ -31,13 +31,13 @@ public class AuthenticationSecurityAdapter implements IAuthenticationSecurityPor
 
     @Override
     public UserModel authenticate(String email, String password) {
-        logger.info("[Infraestructura] [AuthenticationSecurityAdapter] Iniciando autenticación.");
+        logger.info("[Infraestructura] [AuthenticationSecurityAdapter] Iniciando autenticacion.");
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(email, password)
         );
         UserEntity userEntity = (UserEntity) authentication.getPrincipal();
         UserModel userModel = userEntityMapper.userEntityToUserModel(userEntity);
-        logger.info("[Infraestructura] [AuthenticationSecurityAdapter] Autenticación exitosa.");
+        logger.info("[Infraestructura] [AuthenticationSecurityAdapter] Autenticacion exitosa.");
         return userModel;
     }
 
@@ -58,10 +58,10 @@ public class AuthenticationSecurityAdapter implements IAuthenticationSecurityPor
                     new UsernamePasswordAuthenticationToken(userEmail, userPassword)
             );
             boolean isAuthenticated = authentication.isAuthenticated();
-            logger.info("[Infraestructura] [AuthenticationSecurityAdapter] Validación de credenciales exitosa.");
+            logger.info("[Infraestructura] [AuthenticationSecurityAdapter] Validacion de credenciales exitosa.");
             return isAuthenticated;
         } catch (Exception e) {
-            logger.warn("[Infraestructura] [AuthenticationSecurityAdapter] Credenciales inválidas.");
+            logger.warn("[Infraestructura] [AuthenticationSecurityAdapter] Credenciales invalidas.");
             throw new InvalidCredentialsException("Credenciales proporcionadas no validas.");
         }
     }

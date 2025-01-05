@@ -20,14 +20,17 @@ public class AuthenticationUseCase implements IAuthenticationServicePort {
 
     @Override
     public String login(String email, String password) {
-        logger.info("[Dominio] Entre al Login");
+        logger.info("[Dominio] Iniciando proceso de login para el email: {}", email);
+
         if (!authenticationSecurityPort.validateCredentials(email, password)) {
+            logger.warn("[Dominio] Credenciales invalidas para el email: {}", email);
             throw new AuthenticationException(Util.INVALID_USER_CREDENTIALS);
         }
 
         UserModel user = authenticationSecurityPort.authenticate(email, password);
+        logger.info("[Dominio] Usuario autenticado exitosamente para el email: {}", email);
 
-        logger.info("[Dominio] Generando token para el usuario");
+        logger.info("[Dominio] Generando token JWT para el usuario con email: {}", email);
         return authenticationSecurityPort.generateToken(user);
     }
 }
