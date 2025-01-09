@@ -16,4 +16,4 @@ services:
 
 networks:
   backend:
-    external: true # Define que está usando una red existente
+    external: true

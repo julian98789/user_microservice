@@ -2,9 +2,9 @@ package com.user_microservice.user.infrastructure.configuration.security;
 
 import com.user_microservice.user.domain.util.RoleName;
 import com.user_microservice.user.domain.util.Util;
-import com.user_microservice.user.infrastructure.output.jpa.entity.RoleEntity;
-import com.user_microservice.user.infrastructure.output.jpa.entity.UserEntity;
-import com.user_microservice.user.infrastructure.output.jpa.repository.IUserRepository;
+import com.user_microservice.user.infrastructure.persistence.jpa.entity.RoleEntity;
+import com.user_microservice.user.infrastructure.persistence.jpa.entity.UserEntity;
+import com.user_microservice.user.infrastructure.persistence.jpa.repository.IUserRepository;
 import com.user_microservice.user.infrastructure.security.service.JwtService;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;

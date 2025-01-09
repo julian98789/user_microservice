@@ -1,10 +1,10 @@
-package com.user_microservice.user.infrastructure.output.jpa.adapter;
+package com.user_microservice.user.infrastructure.persistence.jpa.adapter;
 
 import com.user_microservice.user.domain.model.UserModel;
 import com.user_microservice.user.domain.spi.IUserModelPersistencePort;
-import com.user_microservice.user.infrastructure.output.jpa.entity.UserEntity;
-import com.user_microservice.user.infrastructure.output.jpa.mapper.IUserEntityMapper;
-import com.user_microservice.user.infrastructure.output.jpa.repository.IUserRepository;
+import com.user_microservice.user.infrastructure.persistence.jpa.entity.UserEntity;
+import com.user_microservice.user.infrastructure.persistence.jpa.mapper.IUserEntityMapper;
+import com.user_microservice.user.infrastructure.persistence.jpa.repository.IUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

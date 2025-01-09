@@ -1,4 +1,4 @@
-package com.user_microservice.user.infrastructure.input.controller;
+package com.user_microservice.user.infrastructure.http.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
