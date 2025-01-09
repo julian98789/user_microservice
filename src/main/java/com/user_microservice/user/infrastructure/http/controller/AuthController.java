@@ -1,4 +1,4 @@
-package com.user_microservice.user.infrastructure.input.controller;
+package com.user_microservice.user.infrastructure.http.controller;
 
 import com.user_microservice.user.application.dto.authentication_dto.AuthenticationRequest;
 import com.user_microservice.user.application.dto.authentication_dto.AuthenticationResponse;

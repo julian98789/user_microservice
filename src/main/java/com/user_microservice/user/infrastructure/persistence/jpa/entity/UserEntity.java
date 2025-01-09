@@ -1,4 +1,4 @@
-package com.user_microservice.user.infrastructure.output.jpa.entity;
+package com.user_microservice.user.infrastructure.persistence.jpa.entity;
 
 import com.user_microservice.user.domain.util.Util;
 import jakarta.persistence.*;

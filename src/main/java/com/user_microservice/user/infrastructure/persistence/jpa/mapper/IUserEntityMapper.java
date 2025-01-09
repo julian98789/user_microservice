@@ -1,7 +1,7 @@
-package com.user_microservice.user.infrastructure.output.jpa.mapper;
+package com.user_microservice.user.infrastructure.persistence.jpa.mapper;
 
 import com.user_microservice.user.domain.model.UserModel;
-import com.user_microservice.user.infrastructure.output.jpa.entity.UserEntity;
+import com.user_microservice.user.infrastructure.persistence.jpa.entity.UserEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;

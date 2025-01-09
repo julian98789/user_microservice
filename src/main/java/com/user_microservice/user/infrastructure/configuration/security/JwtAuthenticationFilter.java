@@ -1,7 +1,7 @@
 package com.user_microservice.user.infrastructure.configuration.security;
 
-import com.user_microservice.user.infrastructure.output.jpa.entity.UserEntity;
-import com.user_microservice.user.infrastructure.output.jpa.repository.IUserRepository;
+import com.user_microservice.user.infrastructure.persistence.jpa.entity.UserEntity;
+import com.user_microservice.user.infrastructure.persistence.jpa.repository.IUserRepository;
 import com.user_microservice.user.infrastructure.security.service.JwtService;
 import com.user_microservice.user.domain.util.Util;
 import io.jsonwebtoken.ExpiredJwtException;

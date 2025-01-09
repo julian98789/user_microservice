@@ -1,7 +1,7 @@
 package com.user_microservice.user.infrastructure.configuration.security;
 
 import com.user_microservice.user.domain.util.Util;
-import com.user_microservice.user.infrastructure.output.jpa.repository.IUserRepository;
+import com.user_microservice.user.infrastructure.persistence.jpa.repository.IUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,6 +29,7 @@ public class BeanSecurityConfiguration {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+
     @Bean
     public UserDetailsService userDetailsService() {
         return userEmail -> userRepository.findByEmail(userEmail).orElseThrow(()-> new UsernameNotFoundException(Util.USER_NOT_FOUND));

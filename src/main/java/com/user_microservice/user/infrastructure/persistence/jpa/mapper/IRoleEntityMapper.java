@@ -1,8 +1,8 @@
-package com.user_microservice.user.infrastructure.output.jpa.mapper;
+package com.user_microservice.user.infrastructure.persistence.jpa.mapper;
 
 
 import com.user_microservice.user.domain.model.RoleModel;
-import com.user_microservice.user.infrastructure.output.jpa.entity.RoleEntity;
+import com.user_microservice.user.infrastructure.persistence.jpa.entity.RoleEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
