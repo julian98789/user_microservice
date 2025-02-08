@@ -22,7 +22,6 @@ import static org.mockito.Mockito.never;
 
 class RoleJpaAdapterTest {
 
-
     @Mock
     private IRoleRepository roleRepository;
 
@@ -32,17 +31,22 @@ class RoleJpaAdapterTest {
     @InjectMocks
     private RoleJpaAdapter roleJpaAdapter;
 
+    private RoleName roleName;
+    private RoleEntity roleEntity;
+    private RoleModel roleModel;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+
+         roleName = RoleName.ADMIN;
+         roleEntity = new RoleEntity();
+         roleModel = new RoleModel();
     }
 
     @Test
-    @DisplayName("Obtener el rol por nombre debe devolver RoleModel cuando el rol existe")
-    void getRoleByNameCase1() {
-        RoleName roleName = RoleName.ADMIN;
-        RoleEntity roleEntity = new RoleEntity();
-        RoleModel roleModel = new RoleModel(1L, roleName, "Admin");
+    @DisplayName("Given existing role name, when getRoleByName, then return RoleModel")
+    void givenExistingRoleName_whenGetRoleByName_thenReturnRoleModel() {
 
         when(roleRepository.findByName(roleName)).thenReturn(Optional.of(roleEntity));
         when(roleEntityMapper.roleEntityToRoleModel(roleEntity)).thenReturn(roleModel);
@@ -56,9 +60,8 @@ class RoleJpaAdapterTest {
     }
 
     @Test
-    @DisplayName("Obtener un rol por nombre debería generar una RoleNameNotFoundException cuando el rol no existe")
-    void getRoleByNameCase2() {
-        RoleName roleName = RoleName.ADMIN;
+    @DisplayName("Given non-existing role name, when getRoleByName, then throw RoleNameNotFoundException")
+    void givenNonExistingRoleName_whenGetRoleByName_thenThrowRoleNameNotFoundException() {
 
         when(roleRepository.findByName(roleName)).thenReturn(Optional.empty());
 

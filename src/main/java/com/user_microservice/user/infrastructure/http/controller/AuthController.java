@@ -1,8 +1,8 @@
 package com.user_microservice.user.infrastructure.http.controller;
 
-import com.user_microservice.user.application.dto.authentication_dto.AuthenticationRequest;
-import com.user_microservice.user.application.dto.authentication_dto.AuthenticationResponse;
-import com.user_microservice.user.application.handler.jwt_handler.IJwtHandler;
+import com.user_microservice.user.application.dto.authenticationdto.AuthenticationRequest;
+import com.user_microservice.user.application.dto.authenticationdto.AuthenticationResponse;
+import com.user_microservice.user.application.handler.jwthandler.IJwtHandler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

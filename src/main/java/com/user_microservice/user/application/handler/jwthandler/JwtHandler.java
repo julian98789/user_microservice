@@ -1,7 +1,7 @@
-package com.user_microservice.user.application.handler.jwt_handler;
+package com.user_microservice.user.application.handler.jwthandler;
 
-import com.user_microservice.user.application.dto.authentication_dto.AuthenticationRequest;
-import com.user_microservice.user.application.dto.authentication_dto.AuthenticationResponse;
+import com.user_microservice.user.application.dto.authenticationdto.AuthenticationRequest;
+import com.user_microservice.user.application.dto.authenticationdto.AuthenticationResponse;
 import com.user_microservice.user.domain.api.IAuthenticationServicePort;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

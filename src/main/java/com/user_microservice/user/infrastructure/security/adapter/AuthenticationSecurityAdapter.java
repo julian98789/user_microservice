@@ -1,5 +1,6 @@
 package com.user_microservice.user.infrastructure.security.adapter;
 
+import com.user_microservice.user.domain.exception.ExtraClaimsException;
 import com.user_microservice.user.domain.exception.InvalidCredentialsException;
 import com.user_microservice.user.domain.model.RoleModel;
 import com.user_microservice.user.domain.model.UserModel;
@@ -10,8 +11,6 @@ import com.user_microservice.user.infrastructure.persistence.jpa.entity.UserEnti
 import com.user_microservice.user.infrastructure.persistence.jpa.mapper.IUserEntityMapper;
 import com.user_microservice.user.infrastructure.security.service.JwtService;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,8 +21,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthenticationSecurityAdapter implements IAuthenticationSecurityPort {
 
-    private static final Logger logger = LoggerFactory.getLogger(AuthenticationSecurityAdapter.class);
-
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final IRoleModelPersistencePort rolePersistencePort;
@@ -31,51 +28,42 @@ public class AuthenticationSecurityAdapter implements IAuthenticationSecurityPor
 
     @Override
     public UserModel authenticate(String email, String password) {
-        logger.info("[Infraestructura] [AuthenticationSecurityAdapter] Iniciando autenticacion.");
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(email, password)
         );
         UserEntity userEntity = (UserEntity) authentication.getPrincipal();
-        UserModel userModel = userEntityMapper.userEntityToUserModel(userEntity);
-        logger.info("[Infraestructura] [AuthenticationSecurityAdapter] Autenticacion exitosa.");
-        return userModel;
+
+        return userEntityMapper.userEntityToUserModel(userEntity);
     }
 
 
     @Override
     public String generateToken(UserModel user) {
-        logger.info("[Infraestructura] [AuthenticationSecurityAdapter] Generando token.");
-        String token = jwtService.generateToken(user, generateExtraClaims(user));
-        logger.info("[Infraestructura] [AuthenticationSecurityAdapter] Token generado exitosamente.");
-        return token;
+
+        return jwtService.generateToken(user, generateExtraClaims(user));
     }
 
     @Override
     public boolean validateCredentials(String userEmail, String userPassword) {
-        logger.info("[Infraestructura] [AuthenticationSecurityAdapter] Validando credenciales.");
+
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(userEmail, userPassword)
             );
-            boolean isAuthenticated = authentication.isAuthenticated();
-            logger.info("[Infraestructura] [AuthenticationSecurityAdapter] Validacion de credenciales exitosa.");
-            return isAuthenticated;
+            return authentication.isAuthenticated();
         } catch (Exception e) {
-            logger.warn("[Infraestructura] [AuthenticationSecurityAdapter] Credenciales invalidas.");
-            throw new InvalidCredentialsException("Credenciales proporcionadas no validas.");
+            throw new InvalidCredentialsException(Util.INVALID_USER_CREDENTIALS, e);
         }
     }
 
     private Map<String, Object> generateExtraClaims(UserModel user) {
-        logger.info("[Infraestructura] [AuthenticationSecurityAdapter] Generando claims adicionales.");
         Map<String, Object> extraClaims = new HashMap<>();
         try {
             extraClaims.put("email", user.getEmail());
             RoleModel role = rolePersistencePort.getRoleByName(user.getRole().getName());
             extraClaims.put(Util.AUTHORITIES_KEY, Util.ROLE_PREFIX + role.getName().name());
-            logger.info("[Infraestructura] [AuthenticationSecurityAdapter] Claims adicionales generados exitosamente.");
         } catch (Exception e) {
-            logger.error("[Infraestructura] [AuthenticationSecurityAdapter] Error al generar claims adicionales.", e);
+            throw new ExtraClaimsException(Util.EXTRA_CLAIMS_ERROR, e);
         }
         return extraClaims;
     }

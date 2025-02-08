@@ -7,8 +7,6 @@ import com.user_microservice.user.domain.exception.UserNotOfLegalAgeException;
 import com.user_microservice.user.domain.model.UserModel;
 import com.user_microservice.user.domain.spi.IUserModelPersistencePort;
 import com.user_microservice.user.domain.util.Util;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 
@@ -16,7 +14,6 @@ import java.time.LocalDate;
 public class UserModelUseCase implements IUserModelServicePort {
 
     private final IUserModelPersistencePort userModelPersistencePort;
-    private static final Logger logger = LoggerFactory.getLogger(UserModelUseCase.class);
 
     public UserModelUseCase(IUserModelPersistencePort userModelPersistencePort) {
         this.userModelPersistencePort = userModelPersistencePort;
@@ -24,12 +21,9 @@ public class UserModelUseCase implements IUserModelServicePort {
 
     @Override
     public UserModel registerUser(UserModel userModel) {
-        logger.info("[Dominio] Iniciando registro de usuario en el sistema");
 
-        logger.info("[Dominio] Validando datos del usuario");
         validateUser(userModel);
 
-        logger.info("[Dominio] Registro de usuario completado exitosamente");
         return userModelPersistencePort.registerUser(userModel);
     }
 

@@ -1,7 +1,7 @@
-package com.user_microservice.user.application.mapper.user_mapper;
+package com.user_microservice.user.application.mapper.usermapper;
 
-import com.user_microservice.user.application.dto.user_dto.UserResponse;
-import com.user_microservice.user.application.mapper.role_mapper.IRoleResponseMapper;
+import com.user_microservice.user.application.dto.userdto.UserResponse;
+import com.user_microservice.user.application.mapper.rolemapper.IRoleResponseMapper;
 import com.user_microservice.user.domain.model.UserModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
