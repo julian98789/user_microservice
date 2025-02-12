@@ -2,9 +2,9 @@ package com.user_microservice.user.infrastructure.http.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.user_microservice.user.application.dto.user_dto.UserRequest;
-import com.user_microservice.user.application.dto.user_dto.UserResponse;
-import com.user_microservice.user.application.handler.user_handler.IUserHandler;
+import com.user_microservice.user.application.dto.userdto.UserRequest;
+import com.user_microservice.user.application.dto.userdto.UserResponse;
+import com.user_microservice.user.application.handler.userhandler.IUserHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.time.LocalDate;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -38,18 +38,16 @@ class UserControllerTest {
 
     private ObjectMapper objectMapper;
 
+    private UserRequest userRequest;
+    private UserResponse userResponse;
+
     @BeforeEach
     void setUp() {
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
-    }
 
-    @Test
-    @DisplayName("Registrar usuario con datos válidos debe devolver el usuario registrado")
-    @WithMockUser(roles = "ADMIN")
-    void registerUser() throws Exception {
-        UserRequest userRequest = new UserRequest();
+        userRequest = new UserRequest();
         userRequest.setName("Juana");
         userRequest.setLastName("Lopez");
         userRequest.setIdentification("123456789");
@@ -59,14 +57,13 @@ class UserControllerTest {
         userRequest.setPassword("password123");
         userRequest.setRole("ADMIN");
 
-        UserResponse userResponse = new UserResponse();
-        userResponse.setId(1L);
-        userResponse.setName("Juana");
-        userResponse.setLastName("Lopez");
-        userResponse.setIdentification("123456789");
-        userResponse.setPhoneNumber("+573001234567");
-        userResponse.setDateOfBirth(LocalDate.of(2000, 5, 15));
-        userResponse.setEmail("juana.lopez@example.com");
+        userResponse = new UserResponse();
+    }
+
+    @Test
+    @DisplayName("Given valid user data, when registering user, then return created user")
+    @WithMockUser(roles = "ADMIN")
+    void givenValidUserData_whenRegisteringUser_thenReturnCreatedUser() throws Exception {
 
         when(userHandler.registerUser(any(UserRequest.class))).thenReturn(userResponse);
 
@@ -76,5 +73,7 @@ class UserControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(userResponse)));
+
+        verify(userHandler, times(1)).registerUser(any(UserRequest.class));
     }
 }

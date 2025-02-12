@@ -1,6 +1,6 @@
-package com.user_microservice.user.application.dto.user_dto;
+package com.user_microservice.user.application.dto.userdto;
 
-import com.user_microservice.user.application.dto.role_dto.role_dto.RoleResponse;
+import com.user_microservice.user.application.dto.roledto.RoleResponse;
 import lombok.Getter;
 import lombok.Setter;
 

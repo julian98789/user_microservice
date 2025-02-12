@@ -1,4 +1,4 @@
-package com.user_microservice.user.application.dto.authentication_dto;
+package com.user_microservice.user.application.dto.authenticationdto;
 
 
 import com.user_microservice.user.domain.util.Util;

@@ -39,27 +39,26 @@ class JwtServiceTest {
         extraClaims.put(Util.AUTHORITIES_KEY, "ROLE_ADMIN");
     }
 
+
     @Test
-    @DisplayName("Debería generar un token JWT correctamente")
-    void testGenerateToken() {
+    @DisplayName("Given valid user and claims, when generating token, then return non-null token")
+    void givenValidUserAndClaims_whenGeneratingToken_thenReturnNonNullToken() {
         String token = jwtService.generateToken(userModel, extraClaims);
         assertNotNull(token);
     }
 
     @Test
-    @DisplayName("Debería extraer el nombre de usuario del token JWT")
-    void testExtractUsername() {
+    @DisplayName("Given valid token, when extracting username, then return correct username")
+    void givenValidToken_whenExtractingUsername_thenReturnCorrectUsername() {
         String token = jwtService.generateToken(userModel, extraClaims);
         String username = jwtService.extractUsername(token);
         assertEquals(userModel.getId().toString(), username);
     }
 
     @Test
-    @DisplayName("Debería validar el token JWT correctamente")
-    void testIsTokenValid() {
+    @DisplayName("Given valid token, when validating token, then return true")
+    void givenValidToken_whenValidatingToken_thenReturnTrue() {
         String token = jwtService.generateToken(userModel, extraClaims);
         assertTrue(jwtService.isTokenValid(token));
     }
-
-
 }

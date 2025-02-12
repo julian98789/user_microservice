@@ -1,9 +1,9 @@
-package com.user_microservice.user.application.handler.user_handler;
+package com.user_microservice.user.application.handler.userhandler;
 
-import com.user_microservice.user.application.dto.user_dto.UserRequest;
-import com.user_microservice.user.application.dto.user_dto.UserResponse;
-import com.user_microservice.user.application.mapper.user_mapper.IUserRequestMapper;
-import com.user_microservice.user.application.mapper.user_mapper.IUserResponseMapper;
+import com.user_microservice.user.application.dto.userdto.UserRequest;
+import com.user_microservice.user.application.dto.userdto.UserResponse;
+import com.user_microservice.user.application.mapper.usermapper.IUserRequestMapper;
+import com.user_microservice.user.application.mapper.usermapper.IUserResponseMapper;
 import com.user_microservice.user.domain.api.IRoleModelServicePort;
 import com.user_microservice.user.domain.api.IUserModelServicePort;
 import com.user_microservice.user.domain.model.RoleModel;
@@ -42,20 +42,31 @@ class UserHandlerTest {
     @InjectMocks
     private UserHandler userHandler;
 
+    private UserRequest userRequest;
+    private RoleModel roleModel;
+    private UserModel userModel;
+    private UserResponse userResponse;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+
+        userRequest = new UserRequest();
+        userRequest.setRole("ADMIN");
+
+        roleModel = new RoleModel();
+
+        userModel = new UserModel();
+        userModel.setEmail("julian@mail.com");
+        userModel.setDateOfBirth(LocalDate.of(2000, 1, 1));
+        userModel.setIdentification("123456789");
+
+        userResponse = new UserResponse();
     }
 
     @Test
-    @DisplayName("Registrar usuario con datos válidos debe devolver el usuario registrado")
-    void registerUser() {
-        UserRequest userRequest = new UserRequest();
-        userRequest.setRole("ADMIN");
-        RoleModel roleModel = new RoleModel(1L, RoleName.ADMIN, "Admin");
-        UserModel userModel = new UserModel(1L, roleModel, "password", "julian@mail.com",
-                LocalDate.of(2000, 1, 1), "123456789", "ID123", "Doe", "John");
-        UserResponse userResponse = new UserResponse();
+    @DisplayName("Given valid user data, when registering user, then return registered user")
+    void givenValidUserData_whenRegisteringUser_thenReturnRegisteredUser() {
 
         when(roleModelPersistencePort.getRoleByName(RoleName.ADMIN)).thenReturn(roleModel);
         when(userRequestMapper.userRequestToUserModel(userRequest)).thenReturn(userModel);

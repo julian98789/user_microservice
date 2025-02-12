@@ -35,27 +35,34 @@ class AuthenticationSecurityAdapterTest {
     @Mock
     private IUserEntityMapper userEntityMapper;
 
+    @Mock
+    Authentication authentication;
+
+
     @InjectMocks
     private AuthenticationSecurityAdapter authenticationSecurityAdapter;
 
+    private UserEntity userEntity;
+    private UserModel userModel;
+
+    private String email;
+    private String password;
 
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+
+        email = "user@example.com";
+        password = "password";
+        userEntity = new UserEntity();
+        userModel = new UserModel();
+
     }
-
     @Test
-    @DisplayName("Authenticate debe devolver UserModel cuando las credenciales son validas")
-    void testAuthenticate() {
-        String email = "user@example.com";
-        String password = "password";
-        UserEntity userEntity = new UserEntity();
-        UserModel userModel = new UserModel(1L, new RoleModel(1L, RoleName.ADMIN, "admin"),
-                "password", "test@example.com", LocalDate.of(2000, 1, 1),
-                "123456789", "ID123", "Doe", "John");
+    @DisplayName("Given valid credentials, when authenticate, then return UserModel")
+    void givenValidCredentials_whenAuthenticate_thenReturnUserModel() {
 
-        Authentication authentication = mock(Authentication.class);
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authentication);
         when(authentication.getPrincipal()).thenReturn(userEntity);
         when(userEntityMapper.userEntityToUserModel(userEntity)).thenReturn(userModel);
@@ -63,14 +70,16 @@ class AuthenticationSecurityAdapterTest {
         UserModel result = authenticationSecurityAdapter.authenticate(email, password);
 
         assertEquals(userModel, result);
+
+        verify(authenticationManager, times(1)).authenticate(any(UsernamePasswordAuthenticationToken.class));
+        verify(authentication, times(1)).getPrincipal();
+        verify(userEntityMapper, times(1)).userEntityToUserModel(userEntity);
     }
 
     @Test
-    @DisplayName("GenerateToken debe devolver token")
-    void testGenerateToken() {
-        UserModel userModel = new UserModel(1L, new RoleModel(1L, RoleName.ADMIN, "admin"),
-                "password", "test@example.com", LocalDate.of(2000, 1, 1),
-                "123456789", "ID123", "Doe", "John");
+    @DisplayName("Given UserModel, when generateToken, then return token")
+    void givenUserModel_whenGenerateToken_thenReturnToken() {
+
         String token = "jwtToken";
 
         when(jwtService.generateToken(any(UserModel.class), any(Map.class))).thenReturn(token);
@@ -78,28 +87,28 @@ class AuthenticationSecurityAdapterTest {
         String result = authenticationSecurityAdapter.generateToken(userModel);
 
         assertEquals(token, result);
+
+        verify(jwtService, times(1)).generateToken(any(UserModel.class), any(Map.class));
     }
 
     @Test
-    @DisplayName("ValidateCredentials debe devolver verdadero cuando las credenciales son validas")
-    void testValidateCredentialsCase1() {
-        String email = "user@example.com";
-        String password = "password";
-        Authentication authentication = mock(Authentication.class);
+    @DisplayName("Given valid credentials, when validateCredentials, then return true")
+    void givenValidCredentials_whenValidateCredentials_thenReturnTrue() {
 
-        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authentication);
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenReturn(authentication);
         when(authentication.isAuthenticated()).thenReturn(true);
 
         boolean result = authenticationSecurityAdapter.validateCredentials(email, password);
-
         assertTrue(result);
+
+        verify(authenticationManager, times(1))
+                .authenticate(any(UsernamePasswordAuthenticationToken.class));
     }
 
     @Test
-    @DisplayName("ValidateCredentials debe lanzar InvalidCredentialsException cuando las credenciales son invalidas")
-    void testValidateCredentialsCase2() {
-        String email = "user@example.com";
-        String password = "wrongPassword";
+    @DisplayName("Given invalid credentials, when validateCredentials, then throw InvalidCredentialsException")
+    void givenInvalidCredentials_whenValidateCredentials_thenThrowInvalidCredentialsException() {
 
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenThrow(new InvalidCredentialsException("Credenciales proporcionadas no validas."));
@@ -107,7 +116,8 @@ class AuthenticationSecurityAdapterTest {
         assertThrows(InvalidCredentialsException.class, () -> {
             authenticationSecurityAdapter.validateCredentials(email, password);
         });
+
+        verify(authenticationManager, times(1))
+                .authenticate(any(UsernamePasswordAuthenticationToken.class));
     }
-
-
 }

@@ -11,6 +11,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,11 +49,17 @@ class JwtAuthenticationFilterTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        SecurityContextHolder.clearContext();
+    }
+
+    @AfterEach
+    void tearDown() {
+        SecurityContextHolder.clearContext();
     }
 
     @Test
-    @DisplayName("Deberia autenticar al usuario cuando el token JWT es valido")
-    void testDoFilterInternal_ValidToken() throws ServletException, IOException {
+    @DisplayName("Given valid JWT token, when doFilterInternal, then authenticate user")
+    void givenValidJwtToken_whenDoFilterInternal_thenAuthenticateUser() throws ServletException, IOException {
         String token = "validToken";
         String userName = "1";
         UserEntity userEntity = new UserEntity();
@@ -74,8 +81,8 @@ class JwtAuthenticationFilterTest {
     }
 
     @Test
-    @DisplayName("No deberia autenticar al usuario cuando el token JWT es invalido")
-    void testDoFilterInternal_InvalidToken() throws ServletException, IOException {
+    @DisplayName("Given invalid JWT token, when doFilterInternal, then do not authenticate user")
+    void givenInvalidJwtToken_whenDoFilterInternal_thenDoNotAuthenticateUser() throws ServletException, IOException {
         String token = "invalidToken";
 
         when(request.getHeader(Util.AUTH_HEADER)).thenReturn(Util.TOKEN_PREFIX + token);
@@ -89,8 +96,8 @@ class JwtAuthenticationFilterTest {
     }
 
     @Test
-    @DisplayName("Should handle expired JWT token")
-    void testDoFilterInternal_ExpiredToken() throws ServletException, IOException {
+    @DisplayName("Given expired JWT token, when doFilterInternal, then handle expired token")
+    void givenExpiredJwtToken_whenDoFilterInternal_thenHandleExpiredToken() throws ServletException, IOException {
         String token = "expiredToken";
 
         when(request.getHeader(Util.AUTH_HEADER)).thenReturn(Util.TOKEN_PREFIX + token);
@@ -104,8 +111,8 @@ class JwtAuthenticationFilterTest {
     }
 
     @Test
-    @DisplayName("Deberia manejar la falta de encabezado de autorizacion")
-    void testDoFilterInternal_MissingAuthHeader() throws ServletException, IOException {
+    @DisplayName("Given missing authorization header, when doFilterInternal, then do not authenticate user")
+    void givenMissingAuthHeader_whenDoFilterInternal_thenDoNotAuthenticateUser() throws ServletException, IOException {
         when(request.getHeader(Util.AUTH_HEADER)).thenReturn(null);
 
         jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);

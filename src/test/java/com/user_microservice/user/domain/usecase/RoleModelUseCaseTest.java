@@ -30,10 +30,10 @@ class RoleModelUseCaseTest {
 
 
     @Test
-    @DisplayName("Verificar si existe un rol por nombre válido debe devolver verdadero")
-    void existsRoleByNameCase1() {
+    @DisplayName("Given valid role name, when checking if role exists, then return true")
+    void givenValidRoleName_whenCheckingIfRoleExists_thenReturnTrue() {
         String roleName = "ADMIN";
-        RoleModel roleModel = new RoleModel(1L, RoleName.ADMIN, "Admin");
+        RoleModel roleModel = new RoleModel();
 
         when(roleModelPersistencePort.getRoleByName(RoleName.ADMIN)).thenReturn(roleModel);
 
@@ -44,8 +44,8 @@ class RoleModelUseCaseTest {
     }
 
     @Test
-    @DisplayName("Verificar si existe un rol por nombre inválido debe lanzar RoleNameNotFoundException")
-    void existsRoleByNameCase2() {
+    @DisplayName("Given invalid role name, when checking if role exists, then throw RoleNameNotFoundException")
+    void givenInvalidRoleName_whenCheckingIfRoleExists_thenThrowRoleNameNotFoundException() {
         String roleName = "INVALID_ROLE";
 
         assertThrows(RoleNameNotFoundException.class, () -> roleModelUseCase.existsRoleByName(roleName));
