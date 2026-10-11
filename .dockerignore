@@ -1,0 +1,13 @@
+.git
+.gradle
+build
+.idea
+*.iml
+.vscode
+out
+bin
+*.md
+.env
+.env.*
+docker-compose*.yml
+**/src/test
