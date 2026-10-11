@@ -43,14 +43,14 @@ class JwtServiceTest {
     @Test
     @DisplayName("Given valid user and claims, when generating token, then return non-null token")
     void givenValidUserAndClaims_whenGeneratingToken_thenReturnNonNullToken() {
-        String token = jwtService.generateToken(userModel, extraClaims);
+        String token = jwtService.createToken(userModel, extraClaims);
         assertNotNull(token);
     }
 
     @Test
     @DisplayName("Given valid token, when extracting username, then return correct username")
     void givenValidToken_whenExtractingUsername_thenReturnCorrectUsername() {
-        String token = jwtService.generateToken(userModel, extraClaims);
+        String token = jwtService.createToken(userModel, extraClaims);
         String username = jwtService.extractUsername(token);
         assertEquals(userModel.getId().toString(), username);
     }
@@ -58,7 +58,7 @@ class JwtServiceTest {
     @Test
     @DisplayName("Given valid token, when validating token, then return true")
     void givenValidToken_whenValidatingToken_thenReturnTrue() {
-        String token = jwtService.generateToken(userModel, extraClaims);
+        String token = jwtService.createToken(userModel, extraClaims);
         assertTrue(jwtService.isTokenValid(token));
     }
 }

@@ -42,7 +42,6 @@ public class UserEntity implements UserDetails {
     private String email;
 
     @Column(name = "date_of_birth", nullable = false)
-    @Temporal(TemporalType.DATE)
     private LocalDate dateOfBirth;
 
     @Column(name = "password", nullable = false, length = 255)

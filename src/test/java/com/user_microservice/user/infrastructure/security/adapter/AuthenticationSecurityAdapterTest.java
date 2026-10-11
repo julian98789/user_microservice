@@ -82,13 +82,13 @@ class AuthenticationSecurityAdapterTest {
 
         String token = "jwtToken";
 
-        when(jwtService.generateToken(any(UserModel.class), any(Map.class))).thenReturn(token);
+        when(jwtService.createToken(any(UserModel.class), any(Map.class))).thenReturn(token);
 
         String result = authenticationSecurityAdapter.generateToken(userModel);
 
         assertEquals(token, result);
 
-        verify(jwtService, times(1)).generateToken(any(UserModel.class), any(Map.class));
+        verify(jwtService, times(1)).createToken(any(UserModel.class), any(Map.class));
     }
 
     @Test
@@ -111,7 +111,7 @@ class AuthenticationSecurityAdapterTest {
     void givenInvalidCredentials_whenValidateCredentials_thenThrowInvalidCredentialsException() {
 
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-                .thenThrow(new InvalidCredentialsException("Credenciales proporcionadas no validas."));
+                .thenThrow(new RuntimeException("Credenciales proporcionadas no validas."));
 
         assertThrows(InvalidCredentialsException.class, () -> {
             authenticationSecurityAdapter.validateCredentials(email, password);

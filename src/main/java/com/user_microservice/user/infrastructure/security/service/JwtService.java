@@ -2,14 +2,17 @@ package com.user_microservice.user.infrastructure.security.service;
 
 import com.user_microservice.user.domain.model.UserModel;
 import com.user_microservice.user.domain.util.Util;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.security.Key;
+import javax.crypto.SecretKey;
+import java.time.Instant;
 import java.util.Date;
 import java.util.Map;
 
@@ -20,19 +23,20 @@ public class JwtService {
     @Value("${JWT_SECRET_KEY}")
     private String secretKey;
 
-    public String generateToken(UserModel user, Map<String, Object> extraClaims) {
+    public String createToken(UserModel user, Map<String, Object> extraClaims) {
+        Instant now = Instant.now();
 
         return Jwts.builder()
-                .setClaims(extraClaims)
-                .setSubject(user.getId().toString())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + Util.TOKEN_EXPIRATION_TIME))
-                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-                .signWith(generateKey(), SignatureAlgorithm.HS256)
+                .claims(extraClaims)
+                .subject(user.getId().toString())
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(now.plusMillis(Util.TOKEN_EXPIRATION_TIME)))
+                .header().type("JWT").and()
+                .signWith(generateKey())
                 .compact();
     }
 
-    private Key generateKey() {
+    private SecretKey generateKey() {
         byte[] secretAsBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(secretAsBytes);
     }
@@ -42,8 +46,11 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String jwt) {
-        return Jwts.parserBuilder().setSigningKey(generateKey()).build()
-                .parseClaimsJws(jwt).getBody();
+        return Jwts.parser()
+                .verifyWith(generateKey())
+                .build()
+                .parseSignedClaims(jwt)
+                .getPayload();
     }
 
     public boolean isTokenValid(String token) {
@@ -55,7 +62,7 @@ public class JwtService {
         }
     }
 
-    private Boolean isTokenExpired(Claims claims) {
-        return claims.getExpiration().before(new Date());
+    private boolean isTokenExpired(Claims claims) {
+        return claims.getExpiration().toInstant().isBefore(Instant.now());
     }
 }

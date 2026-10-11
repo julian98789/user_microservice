@@ -40,7 +40,7 @@ public class AuthenticationSecurityAdapter implements IAuthenticationSecurityPor
     @Override
     public String generateToken(UserModel user) {
 
-        return jwtService.generateToken(user, generateExtraClaims(user));
+        return jwtService.createToken(user, generateExtraClaims(user));
     }
 
     @Override

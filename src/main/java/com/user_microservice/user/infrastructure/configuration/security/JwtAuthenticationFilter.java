@@ -10,8 +10,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -19,18 +18,17 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
-    private static final Logger jwtAuthenticationLogger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     private final JwtService jwtService;
     private final IUserRepository userRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        jwtAuthenticationLogger.info("[Infraestructura] [JwtAuthenticationFilter] Iniciando filtro JWT.");
+        log.info("[Infraestructura] [JwtAuthenticationFilter] Iniciando filtro JWT.");
 
         String authHeader = request.getHeader(Util.AUTH_HEADER);
 
@@ -49,31 +47,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private boolean isInvalidAuthHeader(String authHeader) {
         if (authHeader == null || !authHeader.startsWith(Util.TOKEN_PREFIX)) {
-            jwtAuthenticationLogger.warn("[Infraestructura] [JwtAuthenticationFilter] Encabezado de autorizacion no encontrado o invalido.");
+            log.warn("[Infraestructura] [JwtAuthenticationFilter] Encabezado de autorizacion no encontrado o invalido.");
             return true;
         }
         return false;
     }
 
     private String extractJwtFromHeader(String authHeader) {
-        jwtAuthenticationLogger.info("[Infraestructura] [JwtAuthenticationFilter] Extrayendo JWT del encabezado.");
+        log.info("[Infraestructura] [JwtAuthenticationFilter] Extrayendo JWT del encabezado.");
         return authHeader.substring(Util.TOKEN_PREFIX_LENGTH);
     }
 
     private boolean processJwtAuthentication(String jwt, HttpServletResponse response) throws IOException {
         try {
-            jwtAuthenticationLogger.info("[Infraestructura] [JwtAuthenticationFilter] Validando token JWT.");
+            log.info("[Infraestructura] [JwtAuthenticationFilter] Validando token JWT.");
             if (!jwtService.isTokenValid(jwt)) {
-                jwtAuthenticationLogger.warn("[Infraestructura] [JwtAuthenticationFilter] Token JWT invalido.");
+                log.warn("[Infraestructura] [JwtAuthenticationFilter] Token JWT invalido.");
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, Util.INVALID_TOKEN);
                 return false;
             }
 
             String userName = jwtService.extractUsername(jwt);
-            jwtAuthenticationLogger.info("[Infraestructura] [JwtAuthenticationFilter] Token JWT valido. Extrayendo usuario con ID: {}.", userName);
+            log.info("[Infraestructura] [JwtAuthenticationFilter] Token JWT valido. Extrayendo usuario con ID: {}.", userName);
 
             authenticateUser(userName);
-            jwtAuthenticationLogger.info("[Infraestructura] [JwtAuthenticationFilter] Usuario autenticado exitosamente.");
+            log.info("[Infraestructura] [JwtAuthenticationFilter] Usuario autenticado exitosamente.");
         } catch (ExpiredJwtException e) {
             handleExpiredToken(response, e);
             return false;
@@ -96,12 +94,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void handleExpiredToken(HttpServletResponse response, ExpiredJwtException e) throws IOException {
-        jwtAuthenticationLogger.error("[Infraestructura] [JwtAuthenticationFilter] Token JWT expirado.", e);
+        log.error("[Infraestructura] [JwtAuthenticationFilter] Token JWT expirado.", e);
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, Util.TOKEN_EXPIRED);
     }
 
     private void handleInvalidToken(HttpServletResponse response, Exception e) throws IOException {
-        jwtAuthenticationLogger.error("[Infraestructura] [JwtAuthenticationFilter] Error durante la validación del token JWT.", e);
+        log.error("[Infraestructura] [JwtAuthenticationFilter] Error durante la validación del token JWT.", e);
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, Util.INVALID_TOKEN);
     }
 }
