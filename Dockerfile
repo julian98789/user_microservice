@@ -14,9 +14,16 @@ RUN chmod +x gradlew \
 # ===== Stage 2: Runtime =====
 FROM amazoncorretto:17.0.12
 
+RUN yum install -y shadow-utils \
+    && yum clean all \
+    && groupadd --system --gid 1001 appgroup \
+    && useradd --system --uid 1001 --gid appgroup --no-create-home appuser
+
 WORKDIR /app
 
-COPY --from=build /workspace/build/libs/user-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build --chown=appuser:appgroup /workspace/build/libs/user-0.0.1-SNAPSHOT.jar app.jar
+
+USER appuser
 
 EXPOSE 8081
 
